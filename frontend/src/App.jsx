@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+const API_URL = import.meta.env.VITE_API_URL;
 import {
     PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend,
     AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer
@@ -24,7 +25,7 @@ function App() {
 
     useEffect(() => {
         // Load previous request history from MySQL
-        fetch("http://localhost:8080/api/analytics/history")
+        fetch(`${API_URL}/api/analytics/history`)
             .then(response => response.json())
             .then(data => {
                 setEvents(prev => {
@@ -48,7 +49,7 @@ function App() {
             });
 
         const client = new Client({
-            webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+           webSocketFactory: () => new SockJS(`${API_URL}/ws`),
             onConnect: () => {
                 console.log("WebSocket connected!");
                 client.subscribe(
